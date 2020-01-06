@@ -31,4 +31,12 @@ class Node {
 				", temperature=" + temperature +
 				'}';
 	}
+
+	public double getX() {
+		return x;
+	}
+
+	public double getY() {
+		return y;
+	}
 }

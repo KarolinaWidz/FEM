@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 class Grid {
 	private Node [] nodes;
 	private Element [] elements;
@@ -34,6 +32,7 @@ class Grid {
 			}
 		return nodes;
 	}
+
 
 	void printGrid (){
 		System.out.println("Grid: ");
