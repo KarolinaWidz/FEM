@@ -13,16 +13,16 @@ class UniversalElement {
 
 	}
 
-	private IntegralPoint[] setIntegralPoints() {
+	private IntegralPoint[] setIntegralPoints() { //Add integral points to universal element
 		IntegralPoint [] integralPoints = new IntegralPoint[4];
-		integralPoints[0] = new IntegralPoint(-1/sqrt(3),-1/sqrt(3));
-		integralPoints[1] = new IntegralPoint(1/sqrt(3),-1/sqrt(3));
-		integralPoints[2] = new IntegralPoint(1/sqrt(3),1/sqrt(3));
-		integralPoints[3] = new IntegralPoint(-1/sqrt(3),1/sqrt(3));
+		integralPoints[0] = new IntegralPoint(-1/sqrt(3),-1/sqrt(3),1,1);
+		integralPoints[1] = new IntegralPoint(1/sqrt(3),-1/sqrt(3),1,1);
+		integralPoints[2] = new IntegralPoint(1/sqrt(3),1/sqrt(3),1,1);
+		integralPoints[3] = new IntegralPoint(-1/sqrt(3),1/sqrt(3),1,1);
 		return integralPoints;
 	}
 
-	private double [] setShapeFunctions(double ksi, double eta) {
+	private double [] setShapeFunctions(double ksi, double eta) { //set local shape functions
 		double [] tmp = new double[4];
 		tmp[0] = ((1-ksi)*(1-eta))/4;
 		tmp[1] = ((1+ksi)*(1-eta))/4 ;
@@ -31,7 +31,7 @@ class UniversalElement {
 		return tmp;
 	}
 
-	void shapeFunctionInIntegralPoints(){
+	void setShapeFunctionInIntegralPoints(){ // return array with shape function in integral points
 		double [][] tmp = new double[4][4];
 		for(int i=0;i<4;i++){
 			double [] shapeFunctions = setShapeFunctions(this.integralPoints[i].ksi,this.integralPoints[i].eta);
@@ -52,7 +52,7 @@ class UniversalElement {
 		return tmp;
 	}
 
-	void dNdksi(){
+	void dNdksi(){ //d shape functions/dksi in integral points
 		double [][] tmp = new double[4][4];
 		for(int i=0;i<4;i++){
 			double [] devShapeFunctions = setDerivativeShapeFunctions(this.integralPoints[i].eta);
@@ -63,7 +63,7 @@ class UniversalElement {
 			System.out.print("\n");
 		}
 	}
-	void dNdeta(){
+	void dNdeta(){ //d shape functions/deta in integral points
 		double [][] tmp = new double[4][4];
 		for(int i=0;i<4;i++){
 			double [] devShapeFunctions = setDerivativeShapeFunctions(this.integralPoints[i].ksi);

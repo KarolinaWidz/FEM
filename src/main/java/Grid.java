@@ -7,17 +7,11 @@ class Grid {
 		globalData = new GlobalData(height,width,nodesPerHeight,nodesPerWidth);
 		this.elements = createElements();
 		this.nodes = createNodes(temperature);
+		setNodesForElement();
 	}
 
-	private Element [] createElements(){
-		elements = new Element[globalData.amountOfElements];
-		for(int i=0;i<globalData.amountOfElements;i++){
-			elements[i] = new Element(i,globalData.nodesPerHeight);
-		}
-		return elements;
-	}
 
-	private Node [] createNodes(double temperature){
+	Node [] createNodes(double temperature){
 		nodes = new Node[globalData.amountOfNodes];
 		double deltaX = globalData.width/(double)(globalData.nodesPerWidth-1);
 		double deltaY = globalData.height/(double)(globalData.nodesPerHeight-1);
@@ -33,6 +27,31 @@ class Grid {
 		return nodes;
 	}
 
+	Node [] getNodesOfElement(Element element){
+		Node [] nodeOfElement = new Node[4];
+		int [] tab = element.getNodesID();
+		for(int i=0;i<4;i++) {
+			nodeOfElement[i] = this.nodes[tab[i]];
+		}
+
+		return nodeOfElement;
+	}
+
+	private Element [] createElements(){
+		elements = new Element[globalData.amountOfElements];
+		for(int i=0;i<globalData.amountOfElements;i++){
+			elements[i] = new Element(i,globalData.nodesPerHeight);
+		}
+		return elements;
+	}
+
+	private void setNodesForElement(){
+		for(int i=0;i<globalData.amountOfElements;i++){
+			Node [] tmp  = getNodesOfElement(this.elements[i]);
+			this.elements[i].setNodes(tmp);
+		}
+	}
+
 
 	void printGrid (){
 		System.out.println("Grid: ");
@@ -41,8 +60,18 @@ class Grid {
 		}
 		for(int i=0;i<globalData.amountOfElements;i++){
 			System.out.println(elements[i].toString());
+			//System.out.println(Arrays.toString(elements[i].printAllNodes()));
 		}
 
+	}
+
+	public Node[] getNodes() {
+		return nodes;
+	}
+
+
+	public Element[] getElements() {
+		return elements;
 	}
 
 }

@@ -39,4 +39,8 @@ class Node {
 	public double getY() {
 		return y;
 	}
+
+	public int getNodeID() {
+		return nodeID;
+	}
 }

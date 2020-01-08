@@ -3,11 +3,13 @@ import java.util.Arrays;
 class Element {
 	private int elementID;
 	private int [] nodesID;
+	private Node [] nodes;
+	public UniversalElement universalElement;
 
 	Element(int elementID, int nodesPerHeight) {
 		this.elementID = elementID;
 		this.nodesID = setNodesID(elementID,nodesPerHeight);
-	}
+}
 
 	private int [] setNodesID(int elementID, int nodesPerHeight){
 		nodesID = new int [4];
@@ -40,12 +42,32 @@ class Element {
 		this.elementID = elementID;
 	}
 
-	public int[] getNodesID() {
+	int[] getNodesID() {
 		return nodesID;
 	}
 
 	public void setNodesID(int[] nodesID) {
 		this.nodesID = nodesID;
+	}
+
+	void setNodes(Node[] nodes) {
+		this.nodes = nodes;
+	}
+
+	public Node[] getNodes() {
+		return nodes;
+	}
+
+	public int[] printAllNodes() {
+		int [] tmp  = new int[4];
+		for(int i=0;i<4;i++){
+			tmp[i]=nodes[i].getNodeID();
+		}
+		return tmp;
+}
+
+	public String toStringNode(){
+		return Arrays.toString(nodesID);
 	}
 
 	@Override
