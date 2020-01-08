@@ -5,9 +5,9 @@ public class Main {
 	 	Element [] elements = gr.getElements();
 	 	gr.getNodesOfElement(elements[0]);
 	 	UniversalElement universalElement = new UniversalElement();
-		universalElement.dNdksi();
+		universalElement.setDNdksi();
 		System.out.println("\n");
-		universalElement.dNdeta();
+		universalElement.setDNdeta();
 		System.out.println("\n");
 		universalElement.setShapeFunctionInIntegralPoints();
 	}

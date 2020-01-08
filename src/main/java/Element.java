@@ -4,11 +4,16 @@ class Element {
 	private int elementID;
 	private int [] nodesID;
 	private Node [] nodes;
-	public UniversalElement universalElement;
+	private UniversalElement universalElement;
+	private double [] jacobianDet;
+	private Jacobian [] jacobian;
 
 	Element(int elementID, int nodesPerHeight) {
 		this.elementID = elementID;
 		this.nodesID = setNodesID(elementID,nodesPerHeight);
+		this.universalElement = new UniversalElement();
+		this.jacobian = new Jacobian[universalElement.getNumberOfIntegralPoints()];
+		this.jacobianDet = new double[universalElement.getNumberOfIntegralPoints()];
 }
 
 	private int [] setNodesID(int elementID, int nodesPerHeight){
@@ -32,6 +37,46 @@ class Element {
 			nodesID[3] = nodesID[0] + 1;
 		}
 		return nodesID;
+	}
+
+	void calculateJacobianDeterminal(){
+		double [] dxdksi = new double[4] ;
+		double [] dydksi = new double[4] ;
+		double [] dxdeta = new double[4] ;
+		double [] dydeta = new double[4] ;
+		double [][] dNdksi = universalElement.getdNdksi();
+		double [][] dNdeta = universalElement.getdNdeta();
+
+		for(int i=0;i<universalElement.getNumberOfIntegralPoints();i++){
+			dxdksi[i] = calculateDerivativeX(dNdksi[i]);
+			dydksi[i] = calculateDerivativeY(dNdksi[i]);
+			dxdeta[i] = calculateDerivativeX(dNdeta[i]);
+			dydeta[i] = calculateDerivativeY(dNdeta[i]);
+
+			this.jacobian[i] = new Jacobian(dxdksi[i], dydksi[i], dxdeta[i], dydeta[i]);
+			this.jacobianDet[i] = dxdksi[i]*dydeta[i]-dydksi[i]*dxdeta[i];
+
+		}
+	}
+
+	private double calculateDerivativeX(double[] derivative){// Use to jacobian
+		double tmp;
+			tmp = derivative[0]*nodes[0].getX()+
+					derivative[1]*nodes[1].getX()+
+					derivative[2]*nodes[2].getX()+
+					derivative[3]*nodes[3].getX();
+
+		return tmp;
+	}
+
+	private double calculateDerivativeY(double[] derivative){// Use to jacobian
+		double tmp;
+		tmp = derivative[0]*nodes[0].getY()+
+				derivative[1]*nodes[1].getY()+
+				derivative[2]*nodes[2].getY()+
+				derivative[3]*nodes[3].getY();
+
+		return tmp;
 	}
 
 	public int getElementID() {

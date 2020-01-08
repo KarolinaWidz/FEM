@@ -61,7 +61,9 @@ class Grid {
 		for(int i=0;i<globalData.amountOfElements;i++){
 			System.out.println(elements[i].toString());
 			//System.out.println(Arrays.toString(elements[i].printAllNodes()));
+			elements[i].calculateJacobianDeterminal();
 		}
+
 
 	}
 

@@ -2,14 +2,17 @@ import static java.lang.Math.sqrt;
 
 class UniversalElement {
 	private IntegralPoint [] integralPoints;
-	double [] weight;
+	private int numberOfIntegralPoints;
 	double [] shapeFunctions;
-	double [][] derivativeShapeFunctionsKsi;
-	double [][] derivativeShapeFunctionsEta;
+	private double [][] dNdksi;
+	private double [][] dNdeta;
 
 
 	UniversalElement() {
 		this.integralPoints = setIntegralPoints();
+		this.numberOfIntegralPoints = 4;
+		this.dNdksi= setDNdksi();
+		this.dNdeta = setDNdksi();
 
 	}
 
@@ -51,8 +54,12 @@ class UniversalElement {
 		tmp[3] = -(1+val)/4 ;
 		return tmp;
 	}
-
-	void dNdksi(){ //d shape functions/dksi in integral points
+	//		N1 N2 N3 N4
+	//1pc
+	//2pc
+	//3pc
+	//4pc
+	double[][] setDNdksi(){ //d shape functions/dksi in integral points
 		double [][] tmp = new double[4][4];
 		for(int i=0;i<4;i++){
 			double [] devShapeFunctions = setDerivativeShapeFunctions(this.integralPoints[i].eta);
@@ -62,8 +69,9 @@ class UniversalElement {
 			}
 			System.out.print("\n");
 		}
+		return tmp;
 	}
-	void dNdeta(){ //d shape functions/deta in integral points
+	double[][] setDNdeta(){ //d shape functions/deta in integral points
 		double [][] tmp = new double[4][4];
 		for(int i=0;i<4;i++){
 			double [] devShapeFunctions = setDerivativeShapeFunctions(this.integralPoints[i].ksi);
@@ -73,7 +81,18 @@ class UniversalElement {
 			}
 			System.out.print("\n");
 		}
-
+		return tmp;
 	}
 
+	public int getNumberOfIntegralPoints() {
+		return numberOfIntegralPoints;
+	}
+
+	public double[][] getdNdksi() {
+		return dNdksi;
+	}
+
+	public double[][] getdNdeta() {
+		return dNdeta;
+	}
 }
