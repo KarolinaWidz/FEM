@@ -45,12 +45,21 @@ class UniversalElement {
 		}
 	}
 
-	private double [] setDerivativeShapeFunctions(double val) {
+	private double [] setKsiDerivativeShapeFunctions(double val) {
 		double [] tmp = new double[4];
 		tmp[0] = -(1-val)/4;
 		tmp[1] = (1-val)/4 ;
 		tmp[2] = (1+val)/4 ;
 		tmp[3] = -(1+val)/4 ;
+		return tmp;
+	}
+
+	private double [] setEtaDerivativeShapeFunctions(double val) {
+		double [] tmp = new double[4];
+		tmp[0] = -(1-val)/4;
+		tmp[1] = -(1+val)/4 ;
+		tmp[2] = (1+val)/4 ;
+		tmp[3] = (1-val)/4 ;
 		return tmp;
 	}
 	//		N1 N2 N3 N4
@@ -61,7 +70,7 @@ class UniversalElement {
 	double[][] setDNdksi(){ //d shape functions/dksi in integral points
 		double [][] tmp = new double[4][4];
 		for(int i=0;i<4;i++){
-			double [] devShapeFunctions = setDerivativeShapeFunctions(this.integralPoints[i].eta);
+			double [] devShapeFunctions = setKsiDerivativeShapeFunctions(this.integralPoints[i].eta);
 			for(int j=0;j<4;j++){
 				tmp[i][j] = devShapeFunctions[j];
 				System.out.print(tmp[i][j]+"\t");
@@ -73,7 +82,7 @@ class UniversalElement {
 	double[][] setDNdeta(){ //d shape functions/deta in integral points
 		double [][] tmp = new double[4][4];
 		for(int i=0;i<4;i++){
-			double [] devShapeFunctions = setDerivativeShapeFunctions(this.integralPoints[i].ksi);
+			double [] devShapeFunctions = setEtaDerivativeShapeFunctions(this.integralPoints[i].ksi);
 			for(int j=0;j<4;j++){
 				tmp[i][j] = devShapeFunctions[j];
 				System.out.print(tmp[i][j]+"\t");
@@ -93,5 +102,9 @@ class UniversalElement {
 
 	public double[][] getdNdeta() {
 		return dNdeta;
+	}
+
+	public IntegralPoint[] getIntegralPoints() {
+		return integralPoints;
 	}
 }
