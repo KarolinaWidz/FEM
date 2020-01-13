@@ -12,10 +12,28 @@ class Jacobian {
 		this.downRight = dydeta;
 	}
 
-	void transposedJacobiansDeterminal(){
-		this.upLeft = downRight;
-		this.upRight = -upRight;
-		this.downLeft = -downLeft;
-		this.downRight = upLeft;
+	public Jacobian transposedJacobiansDeterminal(){
+		Jacobian tmp = new Jacobian(this.upLeft,this.upRight,this.downLeft,this.downRight);
+		tmp.upLeft = downRight;
+		tmp.upRight = -upRight;
+		tmp.downLeft = -downLeft;
+		tmp.downRight = upLeft;
+		return tmp;
+	}
+
+	public double getUpLeft() {
+		return upLeft;
+	}
+
+	public double getUpRight() {
+		return upRight;
+	}
+
+	public double getDownLeft() {
+		return downLeft;
+	}
+
+	public double getDownRight() {
+		return downRight;
 	}
 }

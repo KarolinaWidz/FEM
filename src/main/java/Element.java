@@ -7,6 +7,7 @@ class Element {
 	private UniversalElement universalElement;
 	private double [] jacobianDet;
 	private Jacobian [] jacobian;
+	private Jacobian [] cofactorJacobian; //macierz dopelnien algebraicznych
 
 	Element(int elementID, int nodesPerHeight) {
 		this.elementID = elementID;
@@ -14,6 +15,7 @@ class Element {
 		this.universalElement = new UniversalElement();
 		this.jacobian = new Jacobian[universalElement.getNumberOfIntegralPoints()];
 		this.jacobianDet = new double[universalElement.getNumberOfIntegralPoints()];
+		this.cofactorJacobian = new Jacobian[universalElement.getNumberOfIntegralPoints()];
 }
 
 	private int [] setNodesID(int elementID, int nodesPerHeight){
@@ -52,14 +54,14 @@ class Element {
 			dydksi[i] = calculateDerivativeY(dNdksi[i]);
 			dxdeta[i] = calculateDerivativeX(dNdeta[i]);
 			dydeta[i] = calculateDerivativeY(dNdeta[i]);
-
 			this.jacobian[i] = new Jacobian(dxdksi[i], dydksi[i], dxdeta[i], dydeta[i]);
 			this.jacobianDet[i] = dxdksi[i]*dydeta[i]-dydksi[i]*dxdeta[i];
+			this.cofactorJacobian[i] = jacobian[i].transposedJacobiansDeterminal();
 
 		}
 	}
 
-	private double calculateDerivativeX(double[] derivative){// Use to jacobian
+	private double calculateDerivativeX(double[] derivative){// Used in jacobian
 		double tmp;
 			tmp = derivative[0]*nodes[0].getX()+
 					derivative[1]*nodes[1].getX()+
@@ -69,7 +71,7 @@ class Element {
 		return tmp;
 	}
 
-	private double calculateDerivativeY(double[] derivative){// Use to jacobian
+	private double calculateDerivativeY(double[] derivative){// Used in jacobian
 		double tmp;
 		tmp = derivative[0]*nodes[0].getY()+
 				derivative[1]*nodes[1].getY()+
@@ -78,6 +80,46 @@ class Element {
 
 		return tmp;
 	}
+
+	private double dNdx(int integralPoint, int numberOfShapeFunction){
+		double [][] x = universalElement.getdNdksi();
+		double [][] y =universalElement.getdNdeta();
+		double tmp = (1/this.jacobianDet[integralPoint])*((this.cofactorJacobian[integralPoint].getUpLeft()
+				*x[integralPoint][numberOfShapeFunction])-(this.cofactorJacobian[integralPoint].getUpRight()*y[integralPoint][numberOfShapeFunction]));
+		System.out.println(tmp);
+		return tmp;
+	}
+
+	private double dNdy(int integralPoint, int numberOfShapeFunction){
+		return (1/ this.jacobianDet[integralPoint])*((this.cofactorJacobian[integralPoint].getDownLeft()
+				*universalElement.getdNdksi()[integralPoint][numberOfShapeFunction])-(this.cofactorJacobian
+				[integralPoint].getDownRight()*universalElement.getdNdeta()[integralPoint][numberOfShapeFunction
+				]));
+	}
+
+	private void calculateHLocalMatrices(){
+		for(int i=0;i<universalElement.getNumberOfIntegralPoints();i++) {
+
+		}
+
+	}
+
+	public void dvectorNdx(int integralPoint){
+		double [][] tmp = new double[1][universalElement.getNumberOfIntegralPoints()];
+		for(int i=0;i<universalElement.getNumberOfIntegralPoints();i++){
+			tmp[0][i]=dNdx(integralPoint,i);
+			System.out.print(tmp[0][i]);
+		}
+	}
+
+	public void dvectorNdy(int integralPoint){
+		double [][] tmp = new double[1][universalElement.getNumberOfIntegralPoints()];
+		for(int i=0;i<universalElement.getNumberOfIntegralPoints();i++){
+			tmp[0][i]=dNdy(integralPoint,i);
+			System.out.print(tmp[0][i]);
+		}
+	}
+
 
 	public int getElementID() {
 		return elementID;

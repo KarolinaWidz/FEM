@@ -3,7 +3,6 @@ import static java.lang.Math.sqrt;
 class UniversalElement {
 	private IntegralPoint [] integralPoints;
 	private int numberOfIntegralPoints;
-	double [] shapeFunctions;
 	private double [][] dNdksi;
 	private double [][] dNdeta;
 
@@ -12,7 +11,7 @@ class UniversalElement {
 		this.integralPoints = setIntegralPoints();
 		this.numberOfIntegralPoints = 4;
 		this.dNdksi= setDNdksi();
-		this.dNdeta = setDNdksi();
+		this.dNdeta = setDNdeta();
 
 	}
 
