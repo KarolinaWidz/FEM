@@ -3,14 +3,12 @@ public class Main {
 		Grid gr = new Grid(1.5,0.5,6,4,100);
 	 	gr.printGrid();
 	 	Element [] elements = gr.getElements();
-	 	UniversalElement universalElement = new UniversalElement();
-		System.out.println("TUTAJ");
-		//elements[1].dvectorNdx(2);
-		//System.out.println("TUTAJ");
-		//elements[0].dNdx(0,1);
-		elements[0].calculateJacobianDeterminal();
-		elements[0].calculateHLocalMatrices(30);
-		//universalElement.setShapeFunctionInIntegralPoints();
+		//System.out.println("Jacobian: ");
+		//elements[0].calculateJacobianDeterminal();
+		System.out.println("H Local: ");
+		elements[0].calculateHLocalMatrix(30);
+		System.out.println("C Local : ");
+		elements[0].calculateCLocalMatrix(700,7800);
 
 
 	}

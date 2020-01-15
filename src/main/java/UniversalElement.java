@@ -24,7 +24,7 @@ class UniversalElement {
 		return integralPoints;
 	}
 
-	private double [] setShapeFunctions(double ksi, double eta) { //set local shape functions
+	public double [] shapeFunctions(double ksi, double eta) { //set local shape functions
 		double [] tmp = new double[4];
 		tmp[0] = ((1-ksi)*(1-eta))/4;
 		tmp[1] = ((1+ksi)*(1-eta))/4 ;
@@ -36,7 +36,7 @@ class UniversalElement {
 	void setShapeFunctionInIntegralPoints(){ // return array with shape function in integral points
 		double [][] tmp = new double[4][4];
 		for(int i=0;i<4;i++){
-			double [] shapeFunctions = setShapeFunctions(this.integralPoints[i].ksi,this.integralPoints[i].eta);
+			double [] shapeFunctions = shapeFunctions(this.integralPoints[i].ksi,this.integralPoints[i].eta);
 			for(int j=0;j<4;j++){
 				tmp[i][j] = shapeFunctions[j];
 				System.out.print(tmp[i][j]+"\t");

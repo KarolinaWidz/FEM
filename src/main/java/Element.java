@@ -8,6 +8,7 @@ class Element {
 	private Node [] nodes;
 	private UniversalElement universalElement;
 	private SimpleMatrix hMatrix;
+	private SimpleMatrix cMatrix;
 	private double [] jacobianDet;
 	private Jacobian [] jacobian;
 	private Jacobian [] cofactorJacobian; //macierz dopelnien algebraicznych
@@ -20,7 +21,7 @@ class Element {
 		this.jacobianDet = new double[universalElement.getNumberOfIntegralPoints()];
 		this.cofactorJacobian = new Jacobian[universalElement.getNumberOfIntegralPoints()];
 		this.hMatrix = new SimpleMatrix(universalElement.getNumberOfIntegralPoints(),universalElement.getNumberOfIntegralPoints());
-
+		this.cMatrix = new SimpleMatrix(universalElement.getNumberOfIntegralPoints(),universalElement.getNumberOfIntegralPoints());
 	}
 
 	private int [] setNodesID(int elementID, int nodesPerHeight){
@@ -86,21 +87,21 @@ class Element {
 		return tmp;
 	}
 
-	double dNdx(int integralPoint, int numberOfShapeFunction){
+	private double dNdx(int integralPoint, int numberOfShapeFunction){
 
 		return (1/this.jacobianDet[integralPoint])*((this.cofactorJacobian[integralPoint].getUpLeft()
 				*universalElement.getdNdksi()[integralPoint][numberOfShapeFunction])-(this.cofactorJacobian[integralPoint].getUpRight()
 				*universalElement.getdNdeta()[integralPoint][numberOfShapeFunction]));
 	}
 
-	double dNdy(int integralPoint, int numberOfShapeFunction){
+	private double dNdy(int integralPoint, int numberOfShapeFunction){
 		return (1/ this.jacobianDet[integralPoint])*((this.cofactorJacobian
 				[integralPoint].getDownRight()*universalElement.getdNdeta()[integralPoint][numberOfShapeFunction
 				])-(this.cofactorJacobian[integralPoint].getDownLeft()
 				*universalElement.getdNdksi()[integralPoint][numberOfShapeFunction]));
 	}
 
-	void calculateHLocalMatrices(double conductivity) {
+	void calculateHLocalMatrix(double conductivity) {
 		SimpleMatrix [] hLocal = new SimpleMatrix[universalElement.getNumberOfIntegralPoints()];
 		for (int i = 0; i < universalElement.getNumberOfIntegralPoints(); i++) {
 			SimpleMatrix dNdx = dvectorNdx(i);
@@ -113,29 +114,50 @@ class Element {
 		}
 
 		for (int i = 0; i < universalElement.getNumberOfIntegralPoints(); i++) {
-			hLocal[i] = hLocal[i].scale(conductivity);
+			hLocal[i] = hLocal[i].scale(conductivity*universalElement.getIntegralPoints()[i].ksiWeight*universalElement.getIntegralPoints()[i].etaWeight);
 			this.hMatrix = this.hMatrix.plus(hLocal[i]);
 		}
+		System.out.println(this.hMatrix);
 
 	}
 
-	public SimpleMatrix dvectorNdx(int integralPoint){
+	private SimpleMatrix dvectorNdx(int integralPoint){
 		double [][] tmp = new double[universalElement.getNumberOfIntegralPoints()][1];
 		for(int i=0;i<universalElement.getNumberOfIntegralPoints();i++){
 			tmp[i][0]=dNdx(integralPoint,i);
 		}
-		SimpleMatrix dvNdx = new SimpleMatrix(tmp);
-		return dvNdx;
+		return new SimpleMatrix(tmp);
 	}
 
-	public SimpleMatrix dvectorNdy(int integralPoint){
+	private SimpleMatrix dvectorNdy(int integralPoint){
 		double [][] tmp = new double[universalElement.getNumberOfIntegralPoints()][1];
 		for(int i=0;i<universalElement.getNumberOfIntegralPoints();i++){
 			tmp[i][0]=dNdy(integralPoint,i);
 		}
-		SimpleMatrix dvNdy = new SimpleMatrix(tmp);
-		return dvNdy;
+		return new SimpleMatrix(tmp);
 
+	}
+
+	void calculateCLocalMatrix(int c, int ro){ //c - specific heat
+		SimpleMatrix [] cLocal = new SimpleMatrix[universalElement.getNumberOfIntegralPoints()];
+		for(int i=0;i<universalElement.getNumberOfIntegralPoints();i++){
+			double [] tmp = universalElement.shapeFunctions(universalElement.getIntegralPoints()[i].ksi,universalElement.getIntegralPoints()[i].eta);
+			double[][] tmpToSimpleMatrix = new double[universalElement.getNumberOfIntegralPoints()][1];
+			for(int j=0;j<universalElement.getNumberOfIntegralPoints();j++){
+				tmpToSimpleMatrix[j][0] = tmp[j];
+			}
+			SimpleMatrix shapeFunctions = new SimpleMatrix(tmpToSimpleMatrix);
+			SimpleMatrix shapeFunctionsTransposed = shapeFunctions.transpose();
+			SimpleMatrix shapeFunctionsMultiplication = shapeFunctions.mult(shapeFunctionsTransposed);
+			double scalar = ro * c * this.jacobianDet[i];
+			cLocal[i] = shapeFunctionsMultiplication.scale(scalar);
+		}
+
+		for(int i=0;i<universalElement.getNumberOfIntegralPoints();i++){
+			cLocal[i] = cLocal[i].scale(universalElement.getIntegralPoints()[i].ksiWeight*universalElement.getIntegralPoints()[i].etaWeight);
+			this.cMatrix = this.cMatrix.plus(cLocal[i]);
+		}
+		System.out.println(this.cMatrix);
 	}
 
 
