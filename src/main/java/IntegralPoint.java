@@ -1,3 +1,6 @@
+/**
+ * Class which represents integral point in universal element
+ */
 class IntegralPoint {
 	double ksi;
 	double eta;

@@ -1,5 +1,8 @@
 import static java.lang.Math.sqrt;
 
+/**
+ * Class with universal element
+ */
 class UniversalElement {
 	private IntegralPoint [] integralPoints;
 	private int numberOfIntegralPoints;

@@ -1,3 +1,6 @@
+/**
+ * Class with FEM Grid (Creating elements and nodes)
+ */
 class Grid {
 	private Node [] nodes;
 	private Element [] elements;

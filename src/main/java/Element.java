@@ -1,7 +1,9 @@
 import org.ejml.simple.SimpleMatrix;
-
 import java.util.Arrays;
 
+/**
+ * Class with global finite element
+ */
 class Element {
 	private int elementID;
 	private int [] nodesID;
@@ -67,7 +69,12 @@ class Element {
 		}
 	}
 
-	private double calculateDerivativeX(double[] derivative){// Used in jacobian
+
+	/**
+	 * Method used in calculating jacobians
+	 * derivative - dNdksi or dNdeta
+	 */
+	private double calculateDerivativeX(double[] derivative){
 		double tmp;
 			tmp = derivative[0]*nodes[0].getX()+
 					derivative[1]*nodes[1].getX()+
@@ -77,7 +84,11 @@ class Element {
 		return tmp;
 	}
 
-	private double calculateDerivativeY(double[] derivative){// Used in jacobian
+	/**
+	 * Method used in calculating jacobians
+	 * derivative - dNdksi or dNdeta
+	 */
+	private double calculateDerivativeY(double[] derivative){
 		double tmp;
 		tmp = derivative[0]*nodes[0].getY()+
 				derivative[1]*nodes[1].getY()+
@@ -138,7 +149,12 @@ class Element {
 
 	}
 
-	void calculateCLocalMatrix(int c, int ro){ //c - specific heat
+
+	/**
+	 * specificHeat - c
+	 * density - ro
+	 */
+	void calculateCLocalMatrix(int specificHeat, int density){
 		SimpleMatrix [] cLocal = new SimpleMatrix[universalElement.getNumberOfIntegralPoints()];
 		for(int i=0;i<universalElement.getNumberOfIntegralPoints();i++){
 			double [] tmp = universalElement.shapeFunctions(universalElement.getIntegralPoints()[i].ksi,universalElement.getIntegralPoints()[i].eta);
@@ -149,7 +165,7 @@ class Element {
 			SimpleMatrix shapeFunctions = new SimpleMatrix(tmpToSimpleMatrix);
 			SimpleMatrix shapeFunctionsTransposed = shapeFunctions.transpose();
 			SimpleMatrix shapeFunctionsMultiplication = shapeFunctions.mult(shapeFunctionsTransposed);
-			double scalar = ro * c * this.jacobianDet[i];
+			double scalar = density * specificHeat * this.jacobianDet[i];
 			cLocal[i] = shapeFunctionsMultiplication.scale(scalar);
 		}
 

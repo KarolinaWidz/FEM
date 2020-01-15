@@ -1,3 +1,6 @@
+/**
+ * Class which represents Jacobian matrix
+ */
 class Jacobian {
 	private double upLeft;
 	private double upRight;

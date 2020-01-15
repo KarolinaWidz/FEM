@@ -1,5 +1,5 @@
 /**
- * Class with FEM mesh
+ * Class with grid characteristics
  */
 class GlobalData {
 

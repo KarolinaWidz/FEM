@@ -1,3 +1,6 @@
+/**
+ * Class with node in global element
+ */
 class Node {
 
 	private int nodeID;
