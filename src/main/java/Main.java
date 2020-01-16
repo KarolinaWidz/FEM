@@ -9,6 +9,8 @@ public class Main {
 		elements[0].calculateHLocalMatrix(30);
 		System.out.println("C Local : ");
 		elements[0].calculateCLocalMatrix(700,7800);
+		System.out.println("H BC Local : ");
+		elements[0].calculateHBC(25);
 
 
 	}

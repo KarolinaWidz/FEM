@@ -7,6 +7,7 @@ class Node {
 	private double x;
 	private double y;
 	private boolean boundaryCondition;
+	private int intBoundaryCondition;
 	private double temperature;
 
 	Node(double x, double y, double temperature, int nodeID, double width, double height, int nodesPerWidth, int nodesPerHeight) {
@@ -15,6 +16,7 @@ class Node {
 		this.y = y;
 		this.boundaryCondition = checkingBoundaryCondition(width,height);
 		this.temperature = temperature;
+		this.intBoundaryCondition = booleanToInt(this.boundaryCondition);
 	}
 
 
@@ -23,6 +25,15 @@ class Node {
 			return true;
 		else return false;
 	}
+
+	private int booleanToInt(boolean input){
+		if(input==true)
+			return 1;
+		else
+			return 0;
+
+	}
+
 
 	@Override
 	public String toString() {
@@ -46,4 +57,9 @@ class Node {
 	public int getNodeID() {
 		return nodeID;
 	}
+
+	public int getIntBoundaryCondition() {
+		return intBoundaryCondition;
+	}
+
 }
