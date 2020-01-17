@@ -10,7 +10,9 @@ public class Main {
 		System.out.println("C Local : ");
 		elements[0].calculateCLocalMatrix(700,7800);
 		System.out.println("H BC Local : ");
-		elements[0].calculateHBC(25);
+		elements[0].calculateHBCMatrix(25);
+		System.out.println("P Local: ");
+		elements[0].calculatePVector(1200,25);
 
 
 	}

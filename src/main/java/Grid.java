@@ -30,6 +30,9 @@ class Grid {
 		return nodes;
 	}
 
+	/**
+	 * Method return which nodes belongs to element.
+	 */
 	Node [] getNodesOfElement(Element element){
 		Node [] nodeOfElement = new Node[4];
 		int [] tab = element.getNodesID();
@@ -48,6 +51,9 @@ class Grid {
 		return elements;
 	}
 
+	/**
+	 * Method set nodes to all elements in grid.
+	 */
 	private void setNodesForElement(){
 		for(int i=0;i<globalData.amountOfElements;i++){
 			Node [] tmp  = getNodesOfElement(this.elements[i]);
