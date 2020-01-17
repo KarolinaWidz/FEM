@@ -229,18 +229,12 @@ class Element {
 			sum[surfaceNum] = resultInFirstPoint[surfaceNum].plus(resultInSecondPoint[surfaceNum]).scale(surface[surfaceNum].detJ);
 
 		}
+		SimpleMatrix tmpResult1 = sum[0].scale(getNodes()[0].getIntBoundaryCondition() * getNodes()[1].getIntBoundaryCondition());
+		SimpleMatrix tmpResult2 = sum[1].scale(getNodes()[1].getIntBoundaryCondition() * getNodes()[2].getIntBoundaryCondition());
+		SimpleMatrix tmpResult3 = sum[2].scale(getNodes()[2].getIntBoundaryCondition() * getNodes()[3].getIntBoundaryCondition());
+		SimpleMatrix tmpResult4 = sum[3].scale(getNodes()[3].getIntBoundaryCondition() * getNodes()[0].getIntBoundaryCondition());
+		this.hbcMatrix = tmpResult1.plus(tmpResult2).plus(tmpResult3).plus(tmpResult4);
 
-		SimpleMatrix tmpResult1;
-		SimpleMatrix tmpResult2;
-		SimpleMatrix tmpResult3;
-		SimpleMatrix tmpResult4;
-		//tmpResult1 = sum[0].scale(getNodes()[0].getIntBoundaryCondition()*getNodes()[1].getIntBoundaryCondition());
-		//tmpResult2 = sum[1].scale(getNodes()[1].getIntBoundaryCondition()*getNodes()[2].getIntBoundaryCondition());
-		//tmpResult3 = sum[2].scale(getNodes()[2].getIntBoundaryCondition()*getNodes()[3].getIntBoundaryCondition());
-		//tmpResult4 = sum[3].scale(getNodes()[3].getIntBoundaryCondition()*getNodes()[0].getIntBoundaryCondition());
-
-		//this.hbcMatrix = tmpResult1.plus(tmpResult2).plus(tmpResult3).plus(tmpResult4);
-		//System.out.println(this.hbcMatrix);
 
 	}
 

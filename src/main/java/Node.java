@@ -10,6 +10,7 @@ class Node {
 	private int intBoundaryCondition;
 	private double temperature;
 
+
 	Node(double x, double y, double temperature, int nodeID, double width, double height, int nodesPerWidth, int nodesPerHeight) {
 		this.nodeID = nodeID;
 		this.x = x;
@@ -62,4 +63,7 @@ class Node {
 		return intBoundaryCondition;
 	}
 
+	public boolean isBoundaryCondition() {
+		return boundaryCondition;
+	}
 }
