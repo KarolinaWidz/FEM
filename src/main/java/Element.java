@@ -32,29 +32,33 @@ class Element {
 		this.cMatrix = new SimpleMatrix(universalElement.getNumberOfIntegralPoints(),universalElement.getNumberOfIntegralPoints());
 		this.hbcMatrix = new SimpleMatrix(universalElement.getNumberOfIntegralPoints(),universalElement.getNumberOfIntegralPoints());
 		this.surface =  new Surface[4];
-		this.pVector = new SimpleMatrix(1,universalElement.getNumberOfIntegralPoints());
+		this.pVector = new SimpleMatrix(universalElement.getNumberOfIntegralPoints(),1);
+	}
+
+	private int [] id(int counter, int nodesPerHeight){
+		nodesID = new int [4];
+		nodesID[0] = elementID + counter;
+		nodesID[1] = nodesID[0] + nodesPerHeight;
+		nodesID[2] = nodesID[1] + 1;
+		nodesID[3] = nodesID[0] + 1;
+
+		return nodesID;
 	}
 
 	private int [] setNodesID(int elementID, int nodesPerHeight){
 		nodesID = new int [4];
-		if(elementID<5) {
-			nodesID[0] = elementID;
-			nodesID[1] = nodesID[0] + nodesPerHeight;
-			nodesID[2] = nodesID[1] + 1;
-			nodesID[3] = nodesID[0] + 1;
+		int iterator = Grid.getGlobalData().nodesPerHeight-1;
+		int i=0;
+		while (true) {
+
+			if (elementID < (iterator * (i + 1))){
+				nodesID = id(i, nodesPerHeight);
+				break;
+			}
+			else
+				i++;
 		}
-		else if(elementID<10) {
-			nodesID[0] = elementID + 1;
-			nodesID[1] = nodesID[0] + nodesPerHeight;
-			nodesID[2] = nodesID[1] + 1;
-			nodesID[3] = nodesID[0] + 1;
-		}
-		else {
-			nodesID[0] = elementID + 2;
-			nodesID[1] = nodesID[0] + nodesPerHeight;
-			nodesID[2] = nodesID[1] + 1;
-			nodesID[3] = nodesID[0] + 1;
-		}
+
 		return nodesID;
 	}
 
@@ -122,6 +126,7 @@ class Element {
 	}
 
 	void calculateHLocalMatrix(double conductivity) {
+
 		SimpleMatrix [] hLocal = new SimpleMatrix[universalElement.getNumberOfIntegralPoints()];
 		for (int i = 0; i < universalElement.getNumberOfIntegralPoints(); i++) {
 			SimpleMatrix dNdx = dvectorNdx(i);
@@ -138,7 +143,7 @@ class Element {
 					ksiWeight*universalElement.getIntegralPoints()[i].etaWeight);
 			this.hMatrix = this.hMatrix.plus(hLocal[i]);
 		}
-		System.out.println(this.hMatrix);
+		//this.hMatrix.print();
 
 	}
 
@@ -156,7 +161,6 @@ class Element {
 			tmp[i][0]=dNdy(integralPoint,i);
 		}
 		return new SimpleMatrix(tmp);
-
 	}
 
 
@@ -164,7 +168,7 @@ class Element {
 	 * specificHeat - c
 	 * density - ro
 	 */
-	void calculateCLocalMatrix(int specificHeat, int density){
+	void calculateCLocalMatrix(double specificHeat, double density){
 		SimpleMatrix [] cLocal = new SimpleMatrix[universalElement.getNumberOfIntegralPoints()];
 		for(int i=0;i<universalElement.getNumberOfIntegralPoints();i++){
 			double [] tmp = universalElement.shapeFunctions(universalElement.getIntegralPoints()[i].ksi,universalElement.getIntegralPoints()[i].eta);
@@ -183,7 +187,7 @@ class Element {
 			cLocal[i] = cLocal[i].scale(universalElement.getIntegralPoints()[i].ksiWeight*universalElement.getIntegralPoints()[i].etaWeight);
 			this.cMatrix = this.cMatrix.plus(cLocal[i]);
 		}
-		System.out.println(this.cMatrix);
+		//this.cMatrix.print();
 	}
 
 	private double [][][] convertShapeFunctionsToSimpleMatrix(int numberOfPoint){
@@ -221,7 +225,7 @@ class Element {
 	}
 
 
-	void calculateHBCMatrix(int alfa){
+	void calculateHBCMatrix(double alfa){
 
 		double [][][] tmpFirstPoint = convertShapeFunctionsToSimpleMatrix(0);
 		double [][][] tmpSecondPoint = convertShapeFunctionsToSimpleMatrix(1);
@@ -244,7 +248,7 @@ class Element {
 		SimpleMatrix tmpResult3 = sum[2].scale(getNodes()[2].getIntBoundaryCondition() * getNodes()[3].getIntBoundaryCondition());
 		SimpleMatrix tmpResult4 = sum[3].scale(getNodes()[3].getIntBoundaryCondition() * getNodes()[0].getIntBoundaryCondition());
 		this.hbcMatrix = tmpResult1.plus(tmpResult2).plus(tmpResult3).plus(tmpResult4);
-		System.out.println(this.hbcMatrix);
+		//this.hbcMatrix.print();
 
 	}
 
@@ -261,8 +265,8 @@ class Element {
 		for(int surfaceNum=0;surfaceNum<4;surfaceNum++){
 			shapeFunctionsInFirstPoint[surfaceNum] = new SimpleMatrix(tmpFirstPoint[surfaceNum]);
 			shapeFunctionsInSecondPoint[surfaceNum] = new SimpleMatrix(tmpSecondPoint[surfaceNum]);
-			resultInFirstPoint[surfaceNum] = shapeFunctionsInFirstPoint[surfaceNum].scale(alfa*ambientTemperature);
-			resultInSecondPoint[surfaceNum] = shapeFunctionsInSecondPoint[surfaceNum].scale(alfa*ambientTemperature);
+			resultInFirstPoint[surfaceNum] = shapeFunctionsInFirstPoint[surfaceNum].transpose().scale(alfa*ambientTemperature);
+			resultInSecondPoint[surfaceNum] = shapeFunctionsInSecondPoint[surfaceNum].transpose().scale(alfa*ambientTemperature);
 			sum[surfaceNum] = resultInFirstPoint[surfaceNum].plus(resultInSecondPoint[surfaceNum]).scale(surface[surfaceNum].jacobian1Ddet);
 		}
 
@@ -271,9 +275,20 @@ class Element {
 		SimpleMatrix tmpResult3 = sum[2].scale(getNodes()[2].getIntBoundaryCondition() * getNodes()[3].getIntBoundaryCondition());
 		SimpleMatrix tmpResult4 = sum[3].scale(getNodes()[3].getIntBoundaryCondition() * getNodes()[0].getIntBoundaryCondition());
 		this.pVector = tmpResult1.plus(tmpResult2).plus(tmpResult3).plus(tmpResult4);
-		System.out.println(this.pVector);
+		//this.pVector.print();
 	}
 
+	public void sethMatrixZero() {
+		this.hMatrix.zero();
+	}
+
+	public void setcMatrixZero() {
+		this.cMatrix.zero();
+	}
+
+	public void setpVectorZero() {
+		this.pVector.zero();
+	}
 
 	public int getElementID() {
 		return elementID;
@@ -309,6 +324,22 @@ class Element {
 
 	public String toStringNode(){
 		return Arrays.toString(nodesID);
+	}
+
+	public SimpleMatrix gethMatrix() {
+		return hMatrix;
+	}
+
+	public SimpleMatrix getcMatrix() {
+		return cMatrix;
+	}
+
+	public SimpleMatrix getHbcMatrix() {
+		return hbcMatrix;
+	}
+
+	public SimpleMatrix getpVector() {
+		return pVector;
 	}
 
 	@Override

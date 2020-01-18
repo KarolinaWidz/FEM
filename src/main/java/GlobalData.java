@@ -18,4 +18,5 @@ class GlobalData {
 		this.amountOfElements = (nodesPerHeight - 1) * (nodesPerWidth - 1);
 		this.amountOfNodes = nodesPerHeight * nodesPerWidth;
 	}
+
 }

@@ -42,9 +42,9 @@ class UniversalElement {
 			double [] shapeFunctions = shapeFunctions(this.integralPoints[i].ksi,this.integralPoints[i].eta);
 			for(int j=0;j<4;j++){
 				tmp[i][j] = shapeFunctions[j];
-				System.out.print(tmp[i][j]+"\t");
+				//System.out.print(tmp[i][j]+"\t");
 			}
-			System.out.print("\n");
+			//System.out.print("\n");
 		}
 	}
 
@@ -76,9 +76,9 @@ class UniversalElement {
 			double [] devShapeFunctions = setKsiDerivativeShapeFunctions(this.integralPoints[i].eta);
 			for(int j=0;j<4;j++){
 				tmp[i][j] = devShapeFunctions[j];
-				System.out.print(tmp[i][j]+"\t");
+				//System.out.print(tmp[i][j]+"\t");
 			}
-			System.out.print("\n");
+			//System.out.print("\n");
 		}
 		return tmp;
 	}
@@ -88,9 +88,9 @@ class UniversalElement {
 			double [] devShapeFunctions = setEtaDerivativeShapeFunctions(this.integralPoints[i].ksi);
 			for(int j=0;j<4;j++){
 				tmp[i][j] = devShapeFunctions[j];
-				System.out.print(tmp[i][j]+"\t");
+				//System.out.print(tmp[i][j]+"\t");
 			}
-			System.out.print("\n");
+			//System.out.print("\n");
 		}
 		return tmp;
 	}
