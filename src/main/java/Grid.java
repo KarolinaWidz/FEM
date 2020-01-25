@@ -149,22 +149,6 @@ class Grid {
 			t0.set(i,initialTemperature);
 
 		for(int i=(int)stepTime;i<=simulationTime;i+=stepTime){
-			calculateHGlobalMatrix(conductivity, alfa);
-			calculateCGlobalMatrix(specificHeat, density);
-			calculatePGlobalVector(ambientTemperature, alfa);
-			SimpleMatrix cStepTime = this.globalCMatrix.divide(stepTime);
-			SimpleMatrix h = this.globalHMatrix.plus(cStepTime);
-			SimpleMatrix p = this.globalPVector.plus(cStepTime.mult(t0));
-			SimpleMatrix t1 = h.solve(p);
-			t0.zero();
-
-			for(int j=0;j<nodes.length;j++){
-				resultTab[j]=t1.get(j);
-				t0.set(j,resultTab[j]);
-			}
-			Arrays.sort(resultTab);
-
-			System.out.println("Time[s]: "+i+"\tTemp. min: "+resultTab[0]+",\t temp. max: "+resultTab[resultTab.length-1]);
 
 			for(int j=0;j<elements.length;j++){
 				elements[j].sethMatrixZero();
@@ -174,9 +158,27 @@ class Grid {
 			this.globalHMatrix.zero();
 			this.globalPVector.zero();
 			this.globalCMatrix.zero();
+
+			calculateHGlobalMatrix(conductivity, alfa);
+			calculateCGlobalMatrix(specificHeat, density);
+			calculatePGlobalVector(ambientTemperature, alfa);
+			SimpleMatrix cStepTime = this.globalCMatrix.divide(stepTime);
+			SimpleMatrix h = this.globalHMatrix.plus(cStepTime);
+			SimpleMatrix p = this.globalPVector.plus(cStepTime.mult(t0));
+			SimpleMatrix t1 = h.solve(p);
+			t0.zero();
 			h.zero();
 			cStepTime.zero();
 			p.zero();
+
+			for(int j=0;j<nodes.length;j++){
+				resultTab[j]=t1.get(j);
+				t0.set(j,resultTab[j]);
+			}
+			Arrays.sort(resultTab);
+
+			System.out.println("Time[s]: "+i+"\tTemp. min: "+resultTab[0]+",\t temp. max: "+resultTab[resultTab.length-1]);
+
 		}
 	}
 

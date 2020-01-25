@@ -1,6 +1,7 @@
 public class Main {
 	public static void main(String [] args) throws Exception {
-		Grid gr = new Grid(0.1,0.1,31,31,100);
+		ReadFile data = new ReadFile("src/main/data.txt");
+		Grid gr = new Grid(data.height,data.width,data.nodesPerHeight,data.nodesPerWidth,data.initialTemperature);
 	 	gr.printGrid();
 	 	Element [] elements = gr.getElements();
 		//System.out.println("Jacobian: ");
@@ -21,7 +22,7 @@ public class Main {
 		System.out.println("P global: ");
 		//gr.calculatePGlobalVector(1200,300);
 		System.out.println("Simulation: ");
-		gr.solution(100,1,1200,300,700,7800,25,100 );
+		gr.solution(data.simulationTime,data.simulationStepTime,data.ambientTemperature,data.alfa,data.specificHeat,data.density,data.conductivity,data.initialTemperature );
 
 	}
 }
