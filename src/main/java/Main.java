@@ -1,6 +1,6 @@
 public class Main {
 	public static void main(String [] args) throws Exception {
-		ReadFile data = new ReadFile("src/main/data.txt");
+		ReadFile data = new ReadFile("src/main/simulationData.txt");
 		Grid gr = new Grid(data.height,data.width,data.nodesPerHeight,data.nodesPerWidth,data.initialTemperature);
 	 	gr.printGrid();
 	 	Element [] elements = gr.getElements();
