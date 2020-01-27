@@ -78,16 +78,14 @@ class Grid {
 		}
 		for(int i=0;i<globalData.amountOfElements;i++){
 			System.out.println(elements[i].toString());
-			//System.out.println(Arrays.toString(elements[i].printAllNodes()));
 			elements[i].calculateJacobianDeterminal();
 		}
 	}
 
-	public void calculateHGlobalMatrix(double conductivity,double alfa){
-		//System.out.println(elements.length);
+	public void calculateHGlobalMatrix(double conductivity,double alpha){
 		for(int i=0; i<elements.length;i++){
 			this.elements[i].calculateHLocalMatrix(conductivity);
-			this.elements[i].calculateHBCMatrix(alfa);
+			this.elements[i].calculateHBCMatrix(alpha);
 			int[] nodesId = new int[4];
 			for(int j=0;j<4;j++){
 				nodesId[j] = this.elements[i].getNodes()[j].getNodeID();
@@ -102,11 +100,9 @@ class Grid {
 			}
 
 		}
-		//this.globalHMatrix.print();
 	}
 
 	public void calculateCGlobalMatrix(double specificHeat, double density){
-		//System.out.println(elements.length);
 		for(int i=0; i<elements.length;i++){
 			int[] nodesId = new int[4];
 			for(int j=0;j<4;j++){
@@ -121,16 +117,15 @@ class Grid {
 				}
 			}
 		}
-		//this.globalCMatrix.print();
 	}
 
-	public void calculatePGlobalVector(double ambientTemperature,double alfa){
+	public void calculatePGlobalVector(double ambientTemperature,double alpha){
 		for(int i=0; i<elements.length;i++){
 			int[] nodesId = new int[4];
 			for(int j=0;j<4;j++){
 				nodesId[j] = this.elements[i].getNodes()[j].getNodeID();
 			}
-			this.elements[i].calculatePVector(ambientTemperature,alfa);
+			this.elements[i].calculatePVector(ambientTemperature,alpha);
 			for(int j=0;j<4;j++){
 					double val = this.elements[i].getpVector().get(j,0);
 					double previousVal=this.globalPVector.get(nodesId[j],0);
@@ -139,10 +134,9 @@ class Grid {
 			}
 
 		}
-		//this.globalPVector.print();
 	}
 
-	public void solution(double simulationTime, double stepTime, double ambientTemperature, double alfa, double specificHeat, double density,double conductivity, double initialTemperature) throws Exception {
+	public void solution(double simulationTime, double stepTime, double ambientTemperature, double alpha, double specificHeat, double density,double conductivity, double initialTemperature) throws Exception {
 		double resultTab []= new double[nodes.length];
 		SimpleMatrix t0 = new SimpleMatrix(nodes.length,1);
 		for(int i=0;i<nodes.length;i++)
@@ -159,9 +153,9 @@ class Grid {
 			this.globalPVector.zero();
 			this.globalCMatrix.zero();
 
-			calculateHGlobalMatrix(conductivity, alfa);
+			calculateHGlobalMatrix(conductivity, alpha);
 			calculateCGlobalMatrix(specificHeat, density);
-			calculatePGlobalVector(ambientTemperature, alfa);
+			calculatePGlobalVector(ambientTemperature, alpha);
 			SimpleMatrix cStepTime = this.globalCMatrix.divide(stepTime);
 			SimpleMatrix h = this.globalHMatrix.plus(cStepTime);
 			SimpleMatrix p = this.globalPVector.plus(cStepTime.mult(t0));
@@ -182,6 +176,18 @@ class Grid {
 		}
 	}
 
+
+	public SimpleMatrix getGlobalHMatrix() {
+		return globalHMatrix;
+	}
+
+	public SimpleMatrix getGlobalCMatrix() {
+		return globalCMatrix;
+	}
+
+	public SimpleMatrix getGlobalPVector() {
+		return globalPVector;
+	}
 
 	public Node[] getNodes() {
 		return nodes;

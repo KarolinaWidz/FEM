@@ -10,7 +10,7 @@ class ReadFile {
 	double simulationTime;
 	double simulationStepTime;
 	double ambientTemperature;
-	double alfa;
+	double alpha;
 	double height;
 	double width;
 	int nodesPerHeight;
@@ -26,7 +26,7 @@ class ReadFile {
 			this.simulationTime = Double.parseDouble(String.valueOf(lines.get(1)));
 			this.simulationStepTime = Double.parseDouble(String.valueOf(lines.get(2)));
 			this.ambientTemperature = Double.parseDouble(String.valueOf(lines.get(3)));
-			this.alfa = Double.parseDouble(String.valueOf(lines.get(4)));
+			this.alpha = Double.parseDouble(String.valueOf(lines.get(4)));
 			this.height = Double.parseDouble(String.valueOf(lines.get(5)));
 			this.width = Double.parseDouble(String.valueOf(lines.get(6)));
 			this.nodesPerHeight = Integer.parseInt(String.valueOf(lines.get(7)));

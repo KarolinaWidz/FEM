@@ -17,7 +17,7 @@ class Element {
 	private double [] jacobianDet;
 	private SimpleMatrix hbcMatrix;
 	private Jacobian [] jacobian;
-	private Jacobian [] cofactorJacobian; //macierz dopelnien algebraicznych
+	private Jacobian [] cofactorJacobian;
 	private Surface[] surface;
 	private SimpleMatrix pVector;
 
@@ -143,8 +143,6 @@ class Element {
 					ksiWeight*universalElement.getIntegralPoints()[i].etaWeight);
 			this.hMatrix = this.hMatrix.plus(hLocal[i]);
 		}
-		//this.hMatrix.print();
-
 	}
 
 	private SimpleMatrix dvectorNdx(int integralPoint){
@@ -187,7 +185,6 @@ class Element {
 			cLocal[i] = cLocal[i].scale(universalElement.getIntegralPoints()[i].ksiWeight*universalElement.getIntegralPoints()[i].etaWeight);
 			this.cMatrix = this.cMatrix.plus(cLocal[i]);
 		}
-		//this.cMatrix.print();
 	}
 
 	private double [][][] convertShapeFunctionsToSimpleMatrix(int numberOfPoint){
@@ -225,7 +222,7 @@ class Element {
 	}
 
 
-	void calculateHBCMatrix(double alfa){
+	void calculateHBCMatrix(double alpha){
 
 		double [][][] tmpFirstPoint = convertShapeFunctionsToSimpleMatrix(0);
 		double [][][] tmpSecondPoint = convertShapeFunctionsToSimpleMatrix(1);
@@ -238,8 +235,8 @@ class Element {
 		for(int surfaceNum=0;surfaceNum<4;surfaceNum++){
 			shapeFunctionsInFirstPoint[surfaceNum] = new SimpleMatrix(tmpFirstPoint[surfaceNum]);
 			shapeFunctionsInSecondPoint[surfaceNum] = new SimpleMatrix(tmpSecondPoint[surfaceNum]);
-			resultInFirstPoint[surfaceNum] = shapeFunctionsInFirstPoint[surfaceNum].transpose().mult(shapeFunctionsInFirstPoint[surfaceNum]).scale(alfa);
-			resultInSecondPoint[surfaceNum] = shapeFunctionsInSecondPoint[surfaceNum].transpose().mult(shapeFunctionsInSecondPoint[surfaceNum]).scale(alfa);
+			resultInFirstPoint[surfaceNum] = shapeFunctionsInFirstPoint[surfaceNum].transpose().mult(shapeFunctionsInFirstPoint[surfaceNum]).scale(alpha);
+			resultInSecondPoint[surfaceNum] = shapeFunctionsInSecondPoint[surfaceNum].transpose().mult(shapeFunctionsInSecondPoint[surfaceNum]).scale(alpha);
 			sum[surfaceNum] = resultInFirstPoint[surfaceNum].plus(resultInSecondPoint[surfaceNum]).scale(surface[surfaceNum].jacobian1Ddet);
 
 		}
@@ -248,12 +245,10 @@ class Element {
 		SimpleMatrix tmpResult3 = sum[2].scale(getNodes()[2].getIntBoundaryCondition() * getNodes()[3].getIntBoundaryCondition());
 		SimpleMatrix tmpResult4 = sum[3].scale(getNodes()[3].getIntBoundaryCondition() * getNodes()[0].getIntBoundaryCondition());
 		this.hbcMatrix = tmpResult1.plus(tmpResult2).plus(tmpResult3).plus(tmpResult4);
-		//this.hbcMatrix.print();
-
-	}
+		}
 
 
-	void calculatePVector(double ambientTemperature, double alfa){
+	void calculatePVector(double ambientTemperature, double alpha){
 		double [][][] tmpFirstPoint = convertShapeFunctionsToSimpleMatrix(0);
 		double [][][] tmpSecondPoint = convertShapeFunctionsToSimpleMatrix(1);
 		SimpleMatrix[] shapeFunctionsInFirstPoint = new SimpleMatrix[4];
@@ -265,8 +260,8 @@ class Element {
 		for(int surfaceNum=0;surfaceNum<4;surfaceNum++){
 			shapeFunctionsInFirstPoint[surfaceNum] = new SimpleMatrix(tmpFirstPoint[surfaceNum]);
 			shapeFunctionsInSecondPoint[surfaceNum] = new SimpleMatrix(tmpSecondPoint[surfaceNum]);
-			resultInFirstPoint[surfaceNum] = shapeFunctionsInFirstPoint[surfaceNum].transpose().scale(alfa*ambientTemperature);
-			resultInSecondPoint[surfaceNum] = shapeFunctionsInSecondPoint[surfaceNum].transpose().scale(alfa*ambientTemperature);
+			resultInFirstPoint[surfaceNum] = shapeFunctionsInFirstPoint[surfaceNum].transpose().scale(alpha*ambientTemperature);
+			resultInSecondPoint[surfaceNum] = shapeFunctionsInSecondPoint[surfaceNum].transpose().scale(alpha*ambientTemperature);
 			sum[surfaceNum] = resultInFirstPoint[surfaceNum].plus(resultInSecondPoint[surfaceNum]).scale(surface[surfaceNum].jacobian1Ddet);
 		}
 
@@ -275,7 +270,6 @@ class Element {
 		SimpleMatrix tmpResult3 = sum[2].scale(getNodes()[2].getIntBoundaryCondition() * getNodes()[3].getIntBoundaryCondition());
 		SimpleMatrix tmpResult4 = sum[3].scale(getNodes()[3].getIntBoundaryCondition() * getNodes()[0].getIntBoundaryCondition());
 		this.pVector = tmpResult1.plus(tmpResult2).plus(tmpResult3).plus(tmpResult4);
-		//this.pVector.print();
 	}
 
 	public void sethMatrixZero() {
@@ -341,6 +335,17 @@ class Element {
 	public SimpleMatrix getpVector() {
 		return pVector;
 	}
+
+	public String matricesToString() {
+		return "\nElement{" +
+				"\nhMatrix=" + this.hMatrix +
+				", \ncMatrix=" + this.cMatrix +
+				", \njacobianDet=" + Arrays.toString(this.jacobianDet) +
+				", \nhbcMatrix=" + this.hbcMatrix +
+				", \npVector=" + this.pVector +
+				'}';
+	}
+
 
 	@Override
 	public String toString() {

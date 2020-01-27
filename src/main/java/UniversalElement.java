@@ -36,15 +36,15 @@ class UniversalElement {
 		return tmp;
 	}
 
-	void setShapeFunctionInIntegralPoints(){ // return array with shape function in integral points
+	public void setShapeFunctionInIntegralPoints(){ // array with shape function in integral points
 		double [][] tmp = new double[4][4];
 		for(int i=0;i<4;i++){
 			double [] shapeFunctions = shapeFunctions(this.integralPoints[i].ksi,this.integralPoints[i].eta);
 			for(int j=0;j<4;j++){
 				tmp[i][j] = shapeFunctions[j];
-				//System.out.print(tmp[i][j]+"\t");
+				System.out.print(tmp[i][j]+"\t");
 			}
-			//System.out.print("\n");
+			System.out.print("\n");
 		}
 	}
 
@@ -80,6 +80,7 @@ class UniversalElement {
 			}
 			//System.out.print("\n");
 		}
+		//System.out.print("\n");
 		return tmp;
 	}
 	double[][] setDNdeta(){ //d shape functions/deta in integral points
@@ -88,11 +89,11 @@ class UniversalElement {
 			double [] devShapeFunctions = setEtaDerivativeShapeFunctions(this.integralPoints[i].ksi);
 			for(int j=0;j<4;j++){
 				tmp[i][j] = devShapeFunctions[j];
-				System.out.print(tmp[i][j]+"\t");
+				//System.out.print(tmp[i][j]+"\t");
 			}
-			System.out.print("\n");
+			//System.out.print("\n");
 		}
-		System.out.print("\n");
+		//System.out.print("\n");
 		return tmp;
 	}
 
